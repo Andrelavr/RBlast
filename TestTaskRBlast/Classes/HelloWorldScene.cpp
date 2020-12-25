@@ -24,19 +24,15 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "ui/UIText.h"
+#include "Button.h"
+#include "ButtonLongPress.h"
 
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
-}
-
-// Print useful error message instead of segfaulting when files are not there.
-static void problemLoading(const char* filename)
-{
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
 // on "init" you need to initialize your instance
@@ -52,82 +48,121 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
+    auto button1 = Button::create("button_normal.png", "button_selected.png");
+    if (button1)
     {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
+        button1->setPosition(Vec2(visibleSize.width * 0.2f + origin.x, visibleSize.height * 0.8f + origin.y));
+        this->addChild(button1, 10);
+        button1->setScale(0.3f);
+        button1->setExpandZone(button1->getContentSize() * 1.2f);
+        button1->setSafetZone(Size(button1->getContentSize().width * 1.5f, button1->getContentSize().height * 2.0f));
+        button1->setAnchorPoint(Vec2(0.5f, 0.5f));
+
+        auto label = Label::createWithTTF("Button 1", "fonts/Marker Felt.ttf", 70);
+        label->setPosition(button1->getContentSize() * 0.5f);
+        button1->addChild(label);
+
+        debugSprite(button1, button1->getSafeZone(), Color3B::GREEN, 1);
+        debugSprite(button1, button1->getExpandZone(), Color3B::BLUE, 2);
     }
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
+    auto button2 = Button::create("button_normal.png", "button_selected.png");
+    if (button2)
     {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
+        button2->setPosition(Vec2(visibleSize.width * 0.5f + origin.x, visibleSize.height * 0.8f + origin.y));
+        this->addChild(button2, 10);
+        button2->setScale(0.3f);
+        button2->setExpandZone(Size(button2->getContentSize().width, button2->getContentSize().height * 1.6f));
+        button2->setSafetZone(Size(button2->getContentSize().width * 1.5f, button2->getContentSize().height * 2.0f));
+        button2->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
+        auto label = Label::createWithTTF("Button 2 Idle", "fonts/Marker Felt.ttf", 70);
+        label->setPosition(button2->getContentSize() * 0.5f);
+        button2->addStateChild(label, 1, ButtonState::Idle);
+
+        debugSprite(button2, button2->getSafeZone(), Color3B::GREEN, 1);
+        debugSprite(button2, button2->getExpandZone(), Color3B::BLUE, 2);
     }
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
+    auto button3 = Button::create("button_normal.png", "button_selected.png");
+    if (button3)
     {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        button3->setPosition(Vec2(visibleSize.width * 0.8f + origin.x, visibleSize.height * 0.8f + origin.y));
+        button3->setRotation(45.0f);
+        this->addChild(button3, 10);
+        button3->setScale(0.3f);
+        button3->setExpandZone(button3->getContentSize() * 1.2f);
+        button3->setSafetZone(Size(button3->getContentSize().width * 1.5f, button3->getContentSize().height * 2.0f));
+        button3->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
+        auto label = Label::createWithTTF("Button 3 Idle + Pushed", "fonts/Marker Felt.ttf", 70);
+        label->setPosition(button3->getContentSize() * 0.5f);
+        button3->addStateChild(label, 1, ButtonState::Idle);
+        button3->addStateChild(label, 1, ButtonState::Pushed);
+
+        debugSprite(button3, button3->getSafeZone(), Color3B::GREEN, 1);
+        debugSprite(button3, button3->getExpandZone(), Color3B::BLUE, 2);
     }
+
+    auto button4 = ButtonLongPress::create("button_normal.png", "button_selected.png");
+    if (button4)
+    {
+        button4->setPosition(Vec2(visibleSize.width * 0.2f + origin.x, visibleSize.height * 0.6f + origin.y));
+        this->addChild(button4, 10);
+        button4->setScale(0.3f);
+        button4->setExpandZone(button4->getContentSize() * 1.2f);
+        button4->setSafetZone(Size(button4->getContentSize().width * 1.5f, button4->getContentSize().height * 2.0f));
+        button4->setAnchorPoint(Vec2(0.5f, 0.5f));
+
+        auto label = Label::createWithTTF("Button 4 Idle + Pushed", "fonts/Marker Felt.ttf", 70);
+        label->setPosition(button4->getContentSize() * 0.5f);
+        button4->addStateChild(label, 1, ButtonState::Idle);
+        button4->addStateChild(label, 1, ButtonState::Pushed);
+
+        auto labelLongPushed = Label::createWithTTF("Long Pushed", "fonts/Marker Felt.ttf", 85);
+        labelLongPushed->setPosition(button4->getContentSize() * 0.5f);
+        button4->addStateChild(labelLongPushed, 1, ButtonState::PushedLong);
+
+        debugSprite(button4, button4->getSafeZone(), Color3B::GREEN, 1);
+        debugSprite(button4, button4->getExpandZone(), Color3B::BLUE, 2);
+    }
+
+    auto labelExpand = Label::createWithTTF("Expand zone", "fonts/Marker Felt.ttf", 25);
+    labelExpand->setPosition(Vec2(visibleSize.width * 0.4f + origin.x, visibleSize.height * 0.20f + origin.y));
+    this->addChild(labelExpand);
+
+    auto spriteExpand = Sprite::create();
+    spriteExpand->setTextureRect(Rect(0.0f, 0.0f, 25.0f, 25.0f));
+    spriteExpand->setPosition(Vec2(visibleSize.width * 0.6f + origin.x, visibleSize.height * 0.20f + origin.y));
+    spriteExpand->setColor(Color3B::BLUE);
+    this->addChild(spriteExpand);
+
+    auto labelSafe = Label::createWithTTF("Safe zone", "fonts/Marker Felt.ttf", 25);
+    labelSafe->setPosition(Vec2(visibleSize.width * 0.4f + origin.x, visibleSize.height * 0.15f + origin.y));
+    this->addChild(labelSafe);
+    
+    auto spriteSafe = Sprite::create();
+    spriteSafe->setTextureRect(Rect(0.0f, 0.0f, 25.0f, 25.0f));
+    spriteSafe->setPosition(Vec2(visibleSize.width * 0.6f + origin.x, visibleSize.height * 0.15f + origin.y));
+    spriteSafe->setColor(Color3B::GREEN);
+    this->addChild(spriteSafe);
+
     return true;
 }
 
-
-void HelloWorld::menuCloseCallback(Ref* pSender)
+Sprite* HelloWorld::debugSprite(cocos2d::Node* transformNode, cocos2d::Size size, cocos2d::Color3B color, int zOrder)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
+    auto sprite = Sprite::create();
+    sprite->setTextureRect(Rect(0.0f, 0.0f, size.width, size.height));
+    sprite->setColor(color);
+    sprite->setOpacity(100);
+    sprite->setAnchorPoint(Vec2(0.5f, 0.5f));
+    this->addChild(sprite, zOrder);
+    Vec3 scale;
+    Quaternion rotation;
+    transformNode->getNodeToParentTransform().decompose(&scale, &rotation, nullptr);
+    sprite->setScale(scale.x, scale.y);
+    sprite->setRotationQuat(rotation);
+    sprite->setPosition(transformNode->getPosition());
+    return sprite;
 }

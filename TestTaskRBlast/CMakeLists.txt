@@ -50,10 +50,15 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/HelloWorldScene.cpp
+     Classes/Button.cpp
+     Classes/ButtonLongPress.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/HelloWorldScene.h
+     Classes/Button.h
+     Classes/ButtonLongPress.h
+     Classes/ButtonState.h
      )
 
 if(ANDROID)
